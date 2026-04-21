@@ -1,4 +1,4 @@
-# Tamper Log System
+#Tamper Log System
 
 There are two phases in any System Network Security attack. The first phase is penetration of the System Network Security system. Attackers will steal logins or abuse services in the System Network Security system. The second phase of a System Network Security attack is covering tracks. This normally entails tampering with log entries in some way or even deleting logs altogether so no evidence is left in the System Network Security System Standard Log files and why they are Standard text files or even JSON log files can be opened in text editors and manipulated without detection in the System Network Security system.
 Even details of file system logs, such as file modified can be falsified in the System Network Security system.
