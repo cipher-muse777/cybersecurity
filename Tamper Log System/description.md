@@ -85,4 +85,51 @@ If the attacker wanted to tamper with a log entry, they would need access to the
 No Cryptographic Signing: As previously mentioned, the logs can be "fixed" if an attacker chooses to do by simply recalculating all the subsequent hash values in the System Network Security system. Adding a signature to the log will prevent this by making it require a key, which is kept in a separate location and if the attacker were to try to compromise this, they would require additional System Network Security system access and know where to look.
 No remote append storage: As mentioned previously the log file is currently stored locally as one file so it is not guaranteed to be deleted by an attacker, in the System Network Security system
 
+## File Structure
+
+```
+tamper_log_system/
+  - logger.py          # Core engine (hashing, chaining, verification)
+  - verify.py          # Standalone verification tool
+  - demo.py            # Full demonstration with tamper tests
+  - logs/
+    - logchain.json  # Auto-created when you add your first log
+```
+
+## Quick Start
+
+```bash
+# 1. Run the full demo (adds logs, verifies, simulates tampering)
+python demo.py
+
+# 2. Add a log entry in your own code
+python -c "from logger import add_log; add_log('LOGIN', 'User alice logged in', user='alice')"
+
+# 3. Verify integrity at any time
+python verify.py
+
+# 4. Show chain AND verify
+python verify.py --show
+```
+
+## How It Works
+
+Each log entry contains:
+- `index`        — Position in the chain
+- `timestamp`    — UTC time of the event
+- `event_type`   — Category (LOGIN, FILE_ACCESS, etc.)
+- `description`  — What happened
+- `user`         — Who triggered it
+- `prev_hash`    — SHA-256 hash of the PREVIOUS entry
+- `current_hash` — SHA-256 hash of this entire entry
+
+Any change to any entry breaks the hash chain, which `verify_chain()` detects.
+
+## Detects
+
+| Attack            | How detected                        |
+|-------------------|-------------------------------------|
+| Modified entry    | Entry's re-computed hash differs    |
+| Deleted entry     | Next entry's prev_hash is wrong     |
+| Re-ordered entries| prev_hash chain breaks at swap point|
 
